@@ -3,7 +3,8 @@
 
 
 import { Loader } from "@/components/Loader";
-import { getClerkUser } from "@/lib/actions/user.actions";
+import { getClerkUser, getDocumentUsers } from "@/lib/actions/user.actions";
+import { useUser } from "@clerk/nextjs";
 import {
   LiveblocksProvider,
   RoomProvider,
@@ -15,6 +16,8 @@ import React from "react";
 export const Provider = ({
   children
 }: { children: React.ReactNode }) => {
+  const { user: clerkUser } = useUser()
+
   return (
     <LiveblocksProvider
       authEndpoint={"/api/liveblocks-auth"}
@@ -22,6 +25,15 @@ export const Provider = ({
         const users = await getClerkUser({ userIds })
 
         return users
+      }}
+      resolveMentionSuggestions={async ({ text, roomId }) => {
+        const roomUsers = await getDocumentUsers({
+          roomId,
+          currnetUser: clerkUser?.emailAddresses[0].emailAddress!,
+          text
+        })
+
+        return roomUsers
       }}
     >
       <RoomProvider id="my-room">
