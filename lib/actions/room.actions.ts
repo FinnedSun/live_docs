@@ -83,3 +83,15 @@ export const getDocuments = async (
     console.log(`Error happened while get a rooms: ${error}`)
   }
 }
+
+export const updateDocumentAccess = async ({
+  roomId,
+  userType,
+  email,
+  updatedBy }: ShareDocumentParams) => {
+  try {
+
+  } catch (error) {
+    console.log(`Error happened while updating a room access ${error}`)
+  }
+}

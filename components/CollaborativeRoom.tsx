@@ -1,19 +1,30 @@
 "use client"
+import Image from 'next/image'
 
 import {
   ClientSideSuspense,
   LiveblocksProvider,
   RoomProvider
 } from '@liveblocks/react/suspense'
-import { Header } from './Header'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
-import { Editor } from './editor/Editor'
-import { ActiveCollaborator } from './ActiveCollaborators'
-import { useEffect, useRef, useState } from 'react'
-import { Input } from './ui/input'
-import Image from 'next/image'
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton
+} from '@clerk/nextjs'
+import {
+  useEffect,
+  useRef,
+  useState
+} from 'react'
+
+import { Header } from '@/components/Header'
+import { Loader } from '@/components/Loader'
+import { Input } from '@/components/ui/input'
+import { Editor } from '@/components/editor/Editor'
+import { ShareModal } from '@/components/ShareModal'
 import { updateDocument } from '@/lib/actions/room.actions'
-import { Loader } from './Loader'
+import { ActiveCollaborator } from '@/components/ActiveCollaborators'
 
 export const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType }: CollaborativeRoomProps) => {
 
@@ -108,6 +119,12 @@ export const CollaborativeRoom = ({ roomId, roomMetadata, users, currentUserType
             </div>
             <div className='flex w-full flex-1 justify-end gap-2 sm:gap-3'>
               <ActiveCollaborator />
+              <ShareModal
+                roomId={roomId}
+                collaborators={users}
+                creatorId={roomMetadata.creatorId}
+                currentUserType={currentUserType}
+              />
               <SignedOut>
                 <SignInButton />
               </SignedOut>
