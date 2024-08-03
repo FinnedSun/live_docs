@@ -2,6 +2,8 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import { UserTypeSelector } from './UserTypeSelector'
 import { Button } from './ui/button'
+import { removeCollaborator, updateDocumentAccess } from '@/lib/actions/room.actions'
+import { Trash2 } from 'lucide-react'
 
 export const Collaborator = ({
   roomId,
@@ -14,8 +16,26 @@ export const Collaborator = ({
   const [loading, setLoading] = useState(false)
 
   const shareDocumentHandler = async (type: string) => {
+    setLoading(true)
+
+    await updateDocumentAccess({
+      roomId,
+      email,
+      userType: type as UserType,
+      updatedBy: user
+    })
+
+    setLoading(false)
   }
   const removeCollaboratorHandler = async (email: string) => {
+    setLoading(true)
+
+    await removeCollaborator({
+      roomId,
+      email,
+    })
+
+    setLoading(false)
   }
   return (
     <li className='flex items-center justify-between gap-2 py-3'>
@@ -49,7 +69,9 @@ export const Collaborator = ({
             setUserType={setUserType || 'viewer'}
             onClickHandler={shareDocumentHandler}
           />
-          <Button type='button' onClick={() => removeCollaboratorHandler(collaborator.email)}>Remove</Button>
+          <Button className='hover:bg-rose-500' type='button' onClick={() => removeCollaboratorHandler(collaborator.email)}>
+            <Trash2 className='size-4' />
+          </Button>
         </div>
       )}
     </li>
